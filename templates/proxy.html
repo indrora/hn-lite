@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/main.css">
+        <title>proxy for {{.title}}</title>
+    </head>
+    <body>
+        
+        <div class="container">
+
+            <h1>{{.title}}</h1>
+            
+            <p>
+                <span>from {{.author}}</span>
+                <span>at {{.date}}</span>
+                <code>{{.url}}</code>
+            </p>
+            <hr>
+
+            {{ safe .content }}
+        </div>
+    </body>
+    </html>

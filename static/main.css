@@ -1,0 +1,33 @@
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3.5rem;
+
+}
+
+.container img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+        max-width: 700px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 1rem;
+        max-width: 100%;
+    }
+}
+
