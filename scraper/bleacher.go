@@ -2,8 +2,9 @@ package scraper
 
 import (
 	"fmt"
-	"log"
 	"net/url"
+
+	"github.com/gofiber/fiber/v2/log"
 
 	"github.com/indrora/hn-lite/cache"
 	"github.com/microcosm-cc/bluemonday"
@@ -11,7 +12,7 @@ import (
 
 // Bleaching the HTML content
 
-func Bleach(content string, originUrl url.URL) string {
+func Bleach(content string, originUrl *url.URL) string {
 
 	bluePolicy := bluemonday.UGCPolicy()
 	bluePolicy.AllowTables()
@@ -30,15 +31,15 @@ func Bleach(content string, originUrl url.URL) string {
 
 	bluePolicy.RewriteSrc(func(u *url.URL) {
 
-		log.Printf("Stubbing cache object for %v", u)
-		cacheKey := cache.AddCacheStub(*u, originUrl)
+		log.Infof("Stubbing cache object for %v", u)
+		cacheKey := cache.AddCacheStub(u, originUrl)
 
 		newUrl, err := url.Parse(fmt.Sprintf("/cache/%s", cacheKey))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		log.Printf("xxxx %v", newUrl)
+		log.Debugf("xxxx %v", newUrl)
 		*u = *newUrl
 
 	})

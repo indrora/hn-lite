@@ -1,0 +1,31 @@
+{{define "statblock"}}
+<dl class="dib mr5">
+    <dd class="f6 f5-ns b ml0">Additions</dd>
+    <dd class="f3 f2-ns b ml0">{{.adds}}</dd>
+</dl>
+<dl class="dib mr5">
+    <dd class="f6 f5-ns b ml0">Evictions</dd>
+    <dd class="f3 f2-ns b ml0">{{.evicts}}</dd>
+</dl>
+<dl class="dib mr5">
+    <dd class="f6 f5-ns b ml0">Hits</dd>
+    <dd class="f3 f2-ns b ml0">{{.hits}}</dd>
+</dl>
+<dl class="dib mr5">
+    <dd class="f6 f5-ns b ml0">Misses</dd>
+    <dd class="f3 f2-ns b ml0">{{.misses}}</dd>
+</dl>
+<dl class="dib">
+    <dd class="f6 f5-ns b ml0">Ratio</dd>
+    <dd class="f3 f2-ns b ml0">{{.ratio}}</dd>
+</dl>
+{{end}}
+
+<article class="pa3 pa5-ns" data-name="slab-stat">
+<h1>STATISTICS & FACTS</h1>
+    <h1>Media Cache</h1>
+    {{template "statblock" .media}}
+<h1>Page Cache </h1>
+    {{template "statblock" .page}}
+
+</article>

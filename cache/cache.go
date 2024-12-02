@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"time"
 
-	"log"
+	"github.com/gofiber/fiber/v2/log"
 
 	"github.com/cespare/xxhash/v2"
 	"github.com/elastic/go-freelru"
@@ -99,18 +99,18 @@ func GetCacheObject(c *fiber.Ctx) error {
 	}
 }
 
-func AddCacheStub(source, referer url.URL) string {
+func AddCacheStub(source, referer *url.URL) string {
 
 	// hash the URL to get a unique key
 	hash := sha256.Sum224([]byte(source.String()))
 	hashstr := fmt.Sprintf("%x", hash)
 
-	log.Printf("xxx %s", hashstr)
-	log.Printf("from %v", source)
-	log.Printf("referer %v", referer)
+	log.Debugf("xxx %s", hashstr)
+	log.Debugf("from %v", source)
+	log.Debugf("referer %v", referer)
 	// quickly check if we've already done this before...
 	if _, in := lru.Peek(hashstr); in {
-		log.Printf("Already cached %s", source.String())
+		log.Infof("Already cached %s", source.String())
 		return hashstr
 	}
 
@@ -119,13 +119,19 @@ func AddCacheStub(source, referer url.URL) string {
 	obj := CacheObject{
 		Stub:      true,
 		ObjectUrl: source.String(),
-		Referer:   referer.String(),
 		CacheKey:  hashstr,
 	}
+	if referer != nil {
+		obj.Referer = referer.String()
+	}
 
-	log.Printf("Caching stub for %s", source.String())
+	log.Infof("Caching stub for %s", source.String())
 	lru.AddWithLifetime(hashstr, obj, CacheLifetime)
 
 	return hashstr
 
+}
+
+func GetStats() freelru.Metrics {
+	return lru.Metrics()
 }

@@ -1,9 +1,10 @@
 package scraper
 
 import (
-	"log"
 	"net/url"
 	"time"
+
+	"github.com/gofiber/fiber/v2/log"
 
 	"github.com/elastic/go-freelru"
 	"github.com/go-shiori/go-readability"
@@ -12,7 +13,7 @@ import (
 )
 
 type ScrapedPage struct {
-	Url        url.URL
+	Url        *url.URL
 	Content    string
 	Title      string
 	Author     string
@@ -34,28 +35,28 @@ func init() {
 	go func() {
 		for range ticker.C {
 			pageLRU.PurgeExpired()
-			log.Printf("LRU size: %d", pageLRU.Len())
+			log.Infof("LRU size: %d", pageLRU.Len())
 			pageLRU.PrintStats()
 		}
 
 	}()
 
 }
-func Scrape(u url.URL) (ScrapedPage, error) {
+func Scrape(u *url.URL) (ScrapedPage, error) {
 	// Get the URL from the request
 
 	// check if it's already in the LRU
 
 	if cached, in := pageLRU.GetAndRefresh(u.String(), 10*time.Minute); in {
-		log.Printf("Cache hit for %s", u.String())
+		log.Debugf("Cache hit for %s", u.String())
 		return cached, nil
 	}
-	log.Printf("Cache miss for %s", u.String())
+	log.Infof("Cache miss for %s", u.String())
 
 	// Get the page
 	page, err := readability.FromURL(u.String(), 5*time.Second)
 	if err != nil {
-		log.Printf("Error getting page: %s", err)
+		log.Errorf("Error getting page: %s", err)
 		return ScrapedPage{}, err
 	}
 
@@ -87,7 +88,7 @@ func RenderPage(c *fiber.Ctx) error {
 		return c.SendStatus(400)
 	}
 
-	page, err := Scrape(*url)
+	page, err := Scrape(url)
 
 	if err == nil {
 		// Awesome
@@ -104,4 +105,8 @@ func RenderPage(c *fiber.Ctx) error {
 		// Oh no
 		return c.SendStatus(500)
 	}
+}
+
+func GetStats() freelru.Metrics {
+	return pageLRU.Metrics()
 }
