@@ -81,7 +81,9 @@ func main() {
 	app.Get("/*", func(c *fiber.Ctx) error {
 		// Send a string response to the client
 
+		// Get the URL from the request
 		pg := c.Params("*1", "")
+		// Check if the URL is valid
 		if pg == "" {
 			return c.SendStatus(404)
 		}
@@ -115,6 +117,9 @@ func StatsPage(c *fiber.Ctx) error {
 	mediametrics := cache.GetStats()
 	pagemetrics := scraper.GetStats()
 
+	mediaHitRatio := (mediametrics.Hits / max(mediametrics.Hits+mediametrics.Misses, 1)) * 100.0
+	pageHitRatio := (pagemetrics.Hits / max(pagemetrics.Hits+pagemetrics.Misses, 1)) * 100.0
+
 	return c.Render("metrics",
 		fiber.Map{
 			"media": fiber.Map{
@@ -123,7 +128,7 @@ func StatsPage(c *fiber.Ctx) error {
 				"adds":     mediametrics.Inserts,
 				"evicts":   mediametrics.Evictions,
 				"removals": mediametrics.Removals,
-				"ratio":    (mediametrics.Hits / max(mediametrics.Misses, 1)) * 100.0,
+				"ratio":    mediaHitRatio,
 			},
 			"page": fiber.Map{
 				"hits":     pagemetrics.Hits,
@@ -131,7 +136,7 @@ func StatsPage(c *fiber.Ctx) error {
 				"adds":     pagemetrics.Inserts,
 				"evicts":   pagemetrics.Evictions,
 				"removals": pagemetrics.Removals,
-				"ratio":    (pagemetrics.Hits / max(pagemetrics.Misses, 1)) * 100.0,
+				"ratio":    pageHitRatio,
 			},
 		}, "layout.main")
 

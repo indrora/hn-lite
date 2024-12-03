@@ -1,3 +1,5 @@
+set windows-shell := ["cmd.exe", "/c"] 
+
 # (This recipie, list just targets)
 default:
     just --list

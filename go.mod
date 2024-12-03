@@ -36,3 +36,5 @@ require (
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
 )
+
+replace github.com/go-shiori/go-readability => ./external/go-readability
