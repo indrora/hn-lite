@@ -1,5 +1,3 @@
-
-
 # (This recipie, list just targets)
 default:
     just --list
@@ -43,3 +41,8 @@ getdeps:
     @echo "Pulling dependencies"
     go mod download
     go mod tidy
+
+fucking cmd:
+    sudo just {{cmd}}
+
+
